@@ -22,11 +22,11 @@ cat /home/ubuntu/.ssh/id_rsa.pub  | sshpass -p devops90! ssh -o StrictHostKeyChe
 
 # sshpass -p devops90! ssh-copy-id -i /home/ubuntu/.ssh/id_rsa.pub -f ubuntu@${remote_host} -o StrictHostKeyChecking=no
 
-git clone https://github.com/karthik-krishnaswamy17/iac-instances.git
-cd /home/ubuntu/iac-instances
+git clone https://github.com/karthik-krishnaswamy17/internal-iac.git
+cd /home/ubuntu/internal-iac/IAC/jenkins
 sudo chmod u+x jenkins_backup.sh
 crontab -l > jenkins_backup_cron
-echo " */30 * * *  * /home/ubuntu/iac-instances/jenkins_backup.sh " >> jenkins_backup_cron
+echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/jenkins/jenkins_backup.sh " >> jenkins_backup_cron
 crontab  jenkins_backup_cron
 rm  jenkins_backup_cron
 

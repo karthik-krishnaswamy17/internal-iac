@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.50.0"
+      version = "4.0.0"
     }
   }
 }
@@ -14,8 +14,8 @@ provider "aws" {
 }
 
 
-resource "aws_security_group" "aws_sg" {
-  name = "security group from terraform"
+resource "aws_security_group" "aws_sg_sonar" {
+  name = "sg for sonar"
 
   ingress {
     description = "SSH from the internet"
@@ -27,8 +27,8 @@ resource "aws_security_group" "aws_sg" {
 
   ingress {
     description = "80 from the internet"
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 9000
+    to_port     = 9000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -42,7 +42,7 @@ resource "aws_security_group" "aws_sg" {
 
 }
 resource "aws_key_pair" "ssh-key-pair" {
-  key_name="ssh-key-pair"
+  key_name="ssh-key-pair-sonar"
   public_key = "${file("/home/karthik/.ssh/id_rsa.pub")}"
 }
 
@@ -51,12 +51,34 @@ resource "aws_instance" "aws_ec2" {
  
   ami                         = "ami-04505e74c0741db8d"
   instance_type               = "t2.medium"
-  vpc_security_group_ids      = [aws_security_group.aws_sg.id]
+  vpc_security_group_ids      = [aws_security_group.aws_sg_sonar.id]
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key-pair.id
-   user_data = "${file("install.sh")}"
+  #user_data = "${file("install.sh")}"
   tags = {
     Name = "SonarQube"
+  }
+  connection {
+    # The default username for our AMI
+    user        = "ubuntu"
+    host        = self.public_ip
+    type        = "ssh"
+    private_key = file("/home/karthik/.ssh/id_rsa")
+
+  }
+
+  provisioner "file" {
+    source      = "install.sh"
+    destination = "/tmp/install.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "cloud-init status --wait",
+      "chmod +x /tmp/install.sh",
+      "/tmp/install.sh",  
+
+    ]
   }
 
 }
