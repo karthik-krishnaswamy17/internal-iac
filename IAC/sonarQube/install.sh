@@ -21,7 +21,7 @@ git clone https://github.com/karthik-krishnaswamy17/internal-iac.git
 cd /home/ubuntu/internal-iac/IAC/sonarQube
 sudo chmod u+x sonarqube_backup.sh
 crontab -l > sonarqube_backup_cron
-echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/sonarQube/sonarqube_backup.sh.sh " >> sonarqube_backup_cron
+echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/sonarQube/sonarqube_backup.sh" >> sonarqube_backup_cron
 crontab  sonarqube_backup_cron
 rm  sonarqube_backup_cron
 

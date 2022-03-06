@@ -60,6 +60,7 @@ resource "aws_instance" "aws_ec2" {
   }
   connection {
     # The default username for our AMI
+    
     user        = "ubuntu"
     host        = self.public_ip
     type        = "ssh"
@@ -81,6 +82,11 @@ resource "aws_instance" "aws_ec2" {
     ]
   }
 
+provisioner "local-exec" {
+  command = "sudo cp /etc/hosts /etc/hosts_bkp;sudo sed -i 's/.*sonarqube*./${self.public_ip} sonarqube/g' /etc/hosts;"
+  
+  
+}
 }
 
 output "instance_ip" {

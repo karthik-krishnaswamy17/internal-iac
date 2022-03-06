@@ -80,6 +80,11 @@ resource "aws_instance" "aws_ec2" {
 
     ]
   }
+provisioner "local-exec" {
+  command = "sudo cp /etc/hosts /etc/hosts_bkp;sudo sed -i 's/.*jenkins*./${self.public_ip} jenkins/g' /etc/hosts;"
+  
+  
+}
 
 }
 

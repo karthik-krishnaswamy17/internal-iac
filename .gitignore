@@ -1,18 +1,8 @@
-
-.terraform.lock.hcl 
-terraform.tfstate
-terraform.tfstate*
-
-IAC/sonarQube/.terraform.tfstate.lock.info
-IAC/sonarQube/.terraform/
-IAC/sonarQube/.terraform.lock.hcl
-IAC/sonarQube/terraform.tfstate
-IAC/sonarQube/terrafor.tfstate*
-
-
-IAC/jenkins/.terraform.tfstate.lock.info
-IAC/jenkins/.terraform/
-IAC/jenkins/.terraform.lock.hcl
-IAC/jenkins/terraform.tfstate
-IAC/jenkins/terrafor.tfstate*
+IAC/**/.terraform.tfstate.lock.info
+IAC/**/.terraform/
+IAC/**/.terraform.lock.hcl*
+IAC/**/terraform.tfstate
+IAC/**/terraform.tfstate*
+IAC/**/*.log
+*.swp
 
