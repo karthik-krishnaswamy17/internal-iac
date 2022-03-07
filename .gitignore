@@ -4,5 +4,8 @@ IAC/**/.terraform.lock.hcl*
 IAC/**/terraform.tfstate
 IAC/**/terraform.tfstate*
 IAC/**/*.log
+IAC/**/private_ip.txt
+IAC/**/public_ip.txt
 *.swp
 *.save
+jenkins_bkp/

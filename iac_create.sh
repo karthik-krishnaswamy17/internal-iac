@@ -52,7 +52,22 @@ run_job()
 
 if nc -z $remote_host 22 2>/dev/null; then
     run_job $1
+    sleep 4m
+    ##SonarCube
+    sonar_public_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/sonarQube/public_ip.txt)
+    sonar_private_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/sonarQube/private_ip.txt)
+    ##Jenkins
+    jenkins_public_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/jenkins/public_ip.txt)
+    jenkins_private_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/jenkins/private_ip.txt) 
+    ##Jenkins
+    nexus_public_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/nexus/public_ip.txt)
+    nexus_private_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/nexus/private_ip.txt) 
+
+    echo -e "${sonar_private_ip} sonarqube\n${jenkins_private_ip} jenkins\n${nexus_private_ip} nexus" | ssh -o ConnectTimeout=900 -o StrictHostKeyChecking=no -i /home/karthik/.ssh/id_rsa ubuntu@${sonar_public_ip} "sudo tee -a /etc/hosts"
+    echo -e "${sonar_private_ip} sonarqube\n${jenkins_private_ip} jenkins\n${nexus_private_ip} nexus" | ssh -o ConnectTimeout=900 -o StrictHostKeyChecking=no -i /home/karthik/.ssh/id_rsa ubuntu@${jenkins_public_ip} "sudo tee -a /etc/hosts"
+    echo -e "${sonar_private_ip} sonarqube\n${jenkins_private_ip} jenkins\n${nexus_private_ip} nexus" | ssh -o ConnectTimeout=900 -o StrictHostKeyChecking=no -i /home/karthik/.ssh/id_rsa ubuntu@${nexus_public_ip} "sudo tee -a /etc/hosts"
 else
     echo "Remote Server not-online.Start manually"
     exit 
 fi
+

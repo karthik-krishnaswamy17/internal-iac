@@ -88,6 +88,8 @@ provisioner "local-exec" {
   sudo cp /etc/hosts /etc/hosts_bkp
   sudo sed -i 's/.*jenkins.*/${self.public_ip} jenkins/g' /etc/hosts
   sudo sed -i 's/.*server.*/server=${self.public_ip}/g' /home/karthik/Desktop/Devops/remmina/jenkins.remmina
+  sudo echo ${self.private_ip} > /home/karthik/Desktop/Devops/Practise_Devops/IAC/jenkins/private_ip.txt
+  sudo echo ${self.public_ip} > /home/karthik/Desktop/Devops/Practise_Devops/IAC/jenkins/public_ip.txt
   sudo kill -9 `pidof remmina`
   EOT
   
