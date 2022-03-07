@@ -19,19 +19,20 @@ ssh-keygen -b 2048 -t rsa -f /home/ubuntu/.ssh/id_rsa -q -N ""
 cat /home/ubuntu/.ssh/id_rsa.pub  | sshpass -p devops90! ssh -o StrictHostKeyChecking=no cloud_user@${remote_host} "cat >> /home/cloud_user/.ssh/authorized_keys"
 
 git clone https://github.com/karthik-krishnaswamy17/internal-iac.git
-cd /home/ubuntu/internal-iac/IAC/sonarQube
-sudo chmod u+x sonarqube_backup.sh
-crontab -l > sonarqube_backup_cron
-echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/sonarQube/sonarqube_backup.sh" >> sonarqube_backup_cron
-crontab  sonarqube_backup_cron
-rm  sonarqube_backup_cron
+cd /home/ubuntu/internal-iac/IAC/nexus
+sudo chmod u+x nexus_backup.sh
+crontab -l > nexus_backup_cron
+echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/nexus/nexus_backup.sh" >> nexus_backup_cron
+crontab  nexus_backup_cron
+rm  nexus_backup_cron
 
 mkdir -p /home/ubuntu/remote_files
 sudo chown -R ubuntu:ubuntu /home/ubuntu/remote_files/
-scp -r -o StrictHostKeyChecking=no cloud_user@${remote_host}:/home/cloud_user/remote_files/sonarqube-persistence.tar.gz /home/ubuntu/remote_files/sonarqube-persistence.tar.gz
-cd /home/ubuntu
-sudo tar xf /home/ubuntu/remote_files/sonarqube-persistence.tar.gz
+mkdir -p /home/ubuntu/nexus-persistence
+sudo chown -R 200:200 /home/ubuntu/nexus-persistence
 
-sudo docker run --name sonarcube -d -p 9000:9000  --volume /home/ubuntu/sonarqube-persistence:/opt/sonarqube/data \
---volume /home/ubuntu/sonarqube-persistence:/opt/sonarqube/logs \
---volume /home/ubuntu/sonarqube-persistence:/opt/sonarqube/extensions  sonarqube:lts
+scp -r -o StrictHostKeyChecking=no cloud_user@${remote_host}:/home/cloud_user/remote_files/nexus-persistence.tar.gz /home/ubuntu/remote_files/nexus-persistence.tar.gz
+cd /home/ubuntu
+sudo tar xf /home/ubuntu/remote_files/nexus-persistence.tar.gz
+
+sudo docker run --name nexus -d -p 8081:8081  --volume /home/ubuntu/nexus-persistence:/nexus-data sonatype/nexus3

@@ -6,7 +6,7 @@ terraform {
     }
   }
 }
-
+variable "remote_host" {}
 provider "aws" {
   #   access_key = "my-access-key"
   #   secret_key = "my-secret-key"
@@ -58,6 +58,9 @@ resource "aws_instance" "aws_ec2" {
   tags = {
     Name = "Jenkins"
   }
+  root_block_device {
+    volume_size="20"
+  }
   connection {
     # The default username for our AMI
     user        = "ubuntu"
@@ -76,13 +79,16 @@ resource "aws_instance" "aws_ec2" {
     inline = [
       "cloud-init status --wait",
       "chmod +x /tmp/install.sh",
-      "/tmp/install.sh",  
+      "/tmp/install.sh ${var.remote_host}",  
 
     ]
   }
 provisioner "local-exec" {
-  command = "sudo cp /etc/hosts /etc/hosts_bkp;sudo sed -i 's/.*jenkins*./${self.public_ip} jenkins/g' /etc/hosts;"
-  
+  command = <<-EOT
+  sudo cp /etc/hosts /etc/hosts_bkp
+  sudo sed -i 's/.*jenkins.*/${self.public_ip} jenkins/g' /etc/hosts
+  sudo sed -i 's/.*server.*/server=${self.public_ip}/g' /home/karthik/Desktop/Devops/remmina/jenkins.remmina
+  EOT
   
 }
 

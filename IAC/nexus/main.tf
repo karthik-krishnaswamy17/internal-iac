@@ -6,7 +6,6 @@ terraform {
     }
   }
 }
-
 variable "remote_host" {}
 
 provider "aws" {
@@ -16,8 +15,8 @@ provider "aws" {
 }
 
 
-resource "aws_security_group" "aws_sg_sonar" {
-  name = "sg for sonar"
+resource "aws_security_group" "aws_sg_nexus" {
+  name = "sg for nexus"
 
   ingress {
     description = "SSH from the internet"
@@ -29,8 +28,8 @@ resource "aws_security_group" "aws_sg_sonar" {
 
   ingress {
     description = "80 from the internet"
-    from_port   = 9000
-    to_port     = 9000
+    from_port   = 8081
+    to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -44,7 +43,7 @@ resource "aws_security_group" "aws_sg_sonar" {
 
 }
 resource "aws_key_pair" "ssh-key-pair" {
-  key_name="ssh-key-pair-sonar"
+  key_name="ssh-key-pair-nexus"
   public_key = "${file("/home/karthik/.ssh/id_rsa.pub")}"
 }
 
@@ -53,12 +52,12 @@ resource "aws_instance" "aws_ec2" {
  
   ami                         = "ami-04505e74c0741db8d"
   instance_type               = "t2.medium"
-  vpc_security_group_ids      = [aws_security_group.aws_sg_sonar.id]
+  vpc_security_group_ids      = [aws_security_group.aws_sg_nexus.id]
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key-pair.id
   #user_data = "${file("install.sh")}"
   tags = {
-    Name = "SonarQube"
+    Name = "Nexus"
   }
   root_block_device {
     volume_size="20"
@@ -70,7 +69,7 @@ resource "aws_instance" "aws_ec2" {
     host        = self.public_ip
     type        = "ssh"
     private_key = file("/home/karthik/.ssh/id_rsa")
-    
+
   }
 
   provisioner "file" {
@@ -81,17 +80,17 @@ resource "aws_instance" "aws_ec2" {
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
-      "chmod +x /tmp/install.sh",
+      "chmod +x /tmp/install.sh ",
       "/tmp/install.sh ${var.remote_host}",  
 
     ]
   }
 
 provisioner "local-exec" {
-  command =  <<-EOT
+  command = <<-EOT
   sudo cp /etc/hosts /etc/hosts_bkp
-  sudo sed -i 's/.*sonarqube.*/${self.public_ip} sonarqube/g' /etc/hosts
-  sudo sed -i 's/.*server.*/server=${self.public_ip}/g' /home/karthik/Desktop/Devops/remmina/sonarqube.remmina
+  sudo sed -i 's/.*nexusweb.*/${self.public_ip} nexusweb/g' /etc/hosts
+  sudo sed -i 's/.*server.*/server=${self.public_ip}/g' /home/karthik/Desktop/Devops/remmina/nexus.remmina
   EOT
   
 }

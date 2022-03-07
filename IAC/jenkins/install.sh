@@ -1,5 +1,6 @@
 #!/bin/sh
-remote_host=f24c46691b3c.mylabserver.com
+# remote_host=f24c46691b3c.mylabserver.com
+remote_host=${1}
 sudo add-apt-repository ppa:openjdk-r/ppa -y
 sudo apt-get update 
 sudo apt install openjdk-11-jdk -y 
