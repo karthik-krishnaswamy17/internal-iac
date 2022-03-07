@@ -91,6 +91,7 @@ provisioner "local-exec" {
   sudo cp /etc/hosts /etc/hosts_bkp
   sudo sed -i 's/.*nexusweb.*/${self.public_ip} nexusweb/g' /etc/hosts
   sudo sed -i 's/.*server.*/server=${self.public_ip}/g' /home/karthik/Desktop/Devops/remmina/nexus.remmina
+  sudo kill -9 `pidof remmina`
   EOT
   
 }
