@@ -1,5 +1,6 @@
 #!/bin/bash
-remote_host="f24c46691b3c.mylabserver.com"
+
+remote_host=${cloud_server}
 run_job()
 {
     jenkins(){
@@ -52,7 +53,7 @@ run_job()
 
 if nc -z $remote_host 22 2>/dev/null; then
     run_job $1
-    sleep 4m
+    sleep 6m
     ##SonarCube
     sonar_public_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/sonarQube/public_ip.txt)
     sonar_private_ip=$(cat /home/karthik/Desktop/Devops/Practise_Devops/IAC/sonarQube/private_ip.txt)

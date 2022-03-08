@@ -18,9 +18,17 @@ fi
 ssh-keygen -b 2048 -t rsa -f /home/ubuntu/.ssh/id_rsa -q -N ""
 cat /home/ubuntu/.ssh/id_rsa.pub  | sshpass -p devops90! ssh -o StrictHostKeyChecking=no cloud_user@${remote_host} "cat >> /home/cloud_user/.ssh/authorized_keys"
 
-git clone https://github.com/karthik-krishnaswamy17/internal-iac.git
+# git clone https://github.com/karthik-krishnaswamy17/internal-iac.git
+mkdir -p /home/ubuntu/internal-iac/IAC/nexus
 cd /home/ubuntu/internal-iac/IAC/nexus
+cat > nexus_backup.sh <<EOF
+#!/bin/bash
+cd /home/ubuntu
+sudo tar zcf nexus-persistence.tar.gz nexus-persistence
+scp -o StrictHostKeyChecking=no nexus-persistence.tar.gz cloud_user@${remote_host}:/home/cloud_user/remote_files
+EOF
 sudo chmod u+x nexus_backup.sh
+
 crontab -l > nexus_backup_cron
 echo " */30 * * *  * /home/ubuntu/internal-iac/IAC/nexus/nexus_backup.sh" >> nexus_backup_cron
 crontab  nexus_backup_cron

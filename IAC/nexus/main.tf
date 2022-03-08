@@ -51,7 +51,7 @@ resource "aws_key_pair" "ssh-key-pair" {
 resource "aws_instance" "aws_ec2" {
  
   ami                         = "ami-04505e74c0741db8d"
-  instance_type               = "t2.medium"
+  instance_type               = "t3.medium"
   vpc_security_group_ids      = [aws_security_group.aws_sg_nexus.id]
   associate_public_ip_address = true
   key_name = aws_key_pair.ssh-key-pair.id
